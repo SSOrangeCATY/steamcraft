@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="steamcraft-win32-x64">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/out/steamcraft-win32-x64.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

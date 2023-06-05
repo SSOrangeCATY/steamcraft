@@ -1,0 +1,81 @@
+.selectVersion {
+    top: 100px;
+    bottom: 50px;
+    position: fixed;
+    left: 0;
+    width: 25%;
+    height: calc(100% - 150px);
+    background-color: rgb(36, 40, 47);
+    overflow-y: auto;
+    user-select: none;
+}
+
+.versions{
+    margin-top: 0px;
+}
+.version {
+   display: flex;
+   flex-direction: row;
+}
+
+
+.versions button {
+    position: relative;
+    display: block;
+    width: 99%;
+    height: 23px;
+    color: rgb(209, 216, 225);
+    white-space: nowrap;
+    overflow: hidden;
+    background-color: transparent;
+    border: none;
+    text-align: left;
+    user-select: none;
+}
+   
+.versions button .ico {
+    margin-right: 6px;
+   }
+.versions button c {
+    position: relative;
+    margin-left: 7px;
+    top: -4px;
+    margin-right: 7px;
+}
+.versions button text {
+    position: relative;
+    top: -4px;
+}
+
+.ico {
+    width: 19px;
+    height: 19px;
+    margin-top: 1px;
+    margin-left: 21px;
+    user-select: none;
+   }
+   
+.versions button:hover {
+    background-color: rgb(50, 58, 75);
+   }
+   
+.versions button:active {
+    background-color: rgb(62,78,105);
+   }
+.versions .active {
+    background-color: rgb(62,78,105);
+   }
+.versions .active:hover {
+    background-color: rgb(88,111,150);
+   }
+   
+.versions button:active:hover {
+    background-color: rgb(88,111,150);
+   }
+.selectVersion {
+    overflow-y: hidden;
+  }
+  
+.selectVersion:hover {
+    overflow-y: auto;
+  }
