@@ -1,6 +1,7 @@
 "use strict";
 let release = os.release().split('.')[0];
 
+
 let batPath
 let jsonPath
 let javaPath = "java"
@@ -22,7 +23,7 @@ let launcher_name = "orange"
 let launcher_version = "001"
 let classpath
 
-let maxMemory = "1024"
+let maxMemory = "2048"
 let minMemory = "256"
 
 let version_names = [];
@@ -32,19 +33,6 @@ let startBt = document.querySelector('.startBt')
 let versionInfo = document.getElementById("versionInfo")
 
 let showVersion = document.getElementById("showVersion")
-
-
-const crypto = require('crypto');
-
-function generateString(name) {
-  // 使用 SHA-256 哈希函数计算名字的哈希值
-  const hash = crypto.createHash('sha256').update(name).digest('hex');
-  // 截取哈希值的前 32 个字符
-  const result = hash.slice(0, 32);
-  // 返回结果
-  return result;
-}
-
 
 
 
@@ -60,10 +48,9 @@ ipcRenderer.on('get-config-reply', (event, config) => {
   if(config.hasOwnProperty('onlineProfile')){
      auth_player_name = config.onlineProfile.name
      auth_uuid = config.onlineProfile.id
-     auth_access_token = auth_uuid;
+     auth_access_token = config.mcAccessToken;
   }else if (config.hasOwnProperty('offlineProfile')){
-    const name = 'YourName';
-    const result = generateString(name);
+    // 没做离线
   }
   if (config.selectVersion == "none") {
     versionInfo.style.display = "none";
@@ -96,8 +83,6 @@ ipcRenderer.on('get-config-reply', (event, config) => {
        executeJson()
      }
    }
-   if(styleCheck == false){
-   }
  });
  
 
@@ -110,7 +95,6 @@ function getJson(callback){
 
  function executeJson(){
   text = '@echo off\n'
-  text += 'set APPDATA="'+ game_directory +'\\"\n'
   text += 'cd /D "'+ game_directory +'\\"\n'
   text += javaPath+' '
   getJson(function(jsonData){
@@ -159,6 +143,8 @@ function getJson(callback){
         argument = ""
       }else if(argument == "${classpath}"){
         argument = ""
+      }else if(argument.includes("DFabricMcEmu")){
+          argument = "-DFabricMcEmu=net.minecraft.client.main.Main "
       }
       const matches = argument.match(regex)
       if (matches) {
@@ -198,13 +184,23 @@ function getJson(callback){
         });
       }
     }
-
     if (!skipLibrary && library.downloads && library.downloads.artifact) {
       let libUrl = library.downloads.artifact.url;
       let libPath = libUrl.replace('https://libraries.minecraft.net/', '');
       libPath = libPath.replace(/\//g, '\\');
+      
       fixedPath += path.join(game_directory, "libraries", libPath) + ";";
     }
+      if(library.hasOwnProperty('name') && library.hasOwnProperty('url')){
+        let libName = library.name;
+        let parts = libName.split(':');
+        let firstPart = parts.shift().replace(/\./g, '\\');
+        let libPath = firstPart + '\\' + parts.join('\\');
+        parts = libName.split(':');
+        parts.shift();
+        libName = parts.join('-') + '.jar';
+        fixedPath += path.join(game_directory,"libraries",libPath,libName)+ ";";
+      }
   });
 
   text += fixedPath
@@ -222,13 +218,13 @@ function getJson(callback){
         value = auth_player_name;
         break;
       case '--version':
-        value = version_name;
+        value = '"'+version_name+'"';
         break;
       case '--gameDir':
-        value = game_directory;
+        value = '"'+path.join(game_directory,"versions",version_name)+'"';
         break;
       case '--assetsDir':
-        value = assets_root;
+        value = '"'+assets_root+'"';
         break;
       case '--assetIndex':
         value = assets_index_name;
@@ -253,10 +249,10 @@ function getJson(callback){
   text += " --width 854 --height 480\n"
   text += "exit"
   fs.writeFile(batPath, text, (err) => {
-    if (err) throw err
-    console.log('Config file has been created,now opening bat file.')
-    runExec()
-  })
+    if (err) throw err;
+    console.log('launcher file has been created,now opening game.');
+    runExec();
+});
 })  
 }
 
@@ -265,7 +261,7 @@ let checkCount = 0;
 let styleCheck = true;
 
 let version = version_name;
-const child = spawn('cmd.exe', ['/c', 'chcp 65001 && ' + batPath]);
+const child = exec(`"${batPath}"`);
 
 child.stdout.on('data', (data) => {
   checkCount++
@@ -281,6 +277,7 @@ child.stderr.on('data', (data) => {
 });
 
 child.on('close', (code) => {
+  console.log(`child process exited with code ${code}`);
   changeSelectElement(version,"2")
   changeStartElement(version,"0")
   const index = version_names.indexOf(version);
@@ -291,6 +288,8 @@ child.on('close', (code) => {
   styleCheck = false
 });
 }
+
+
 function changeStartElement(version,code) {
 
   let index = version_names.indexOf(version);

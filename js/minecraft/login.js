@@ -2,13 +2,15 @@
 let configJson;
 const clientId = '00000000402b5328'; // Minecraft 客户端 id
 let checkProfile = true;
+let skinUrl;
 
 ipcRenderer.on('get-config-reply', (event, config) => {
     configJson = config;
-    if(configJson.hasOwnProperty('onlineProfile') || configJson.hasOwnProperty('offlineProfile')){
-      document.getElementById('accountInfo').style.display = 'none';
+    // 检测config中是否有在线或者离线字段
+    if(configJson.hasOwnProperty('onlineProfile') || configJson.hasOwnProperty('offlineProfile') || configJson.hasOwnProperty('mcAccessToken')){
+      document.getElementById('accountCard').style.display = 'flex';
       document.getElementById('loginCard').style.display = 'none';
-      if (config.hasOwnProperty('onlineProfile') && configJson.hasOwnProperty('account') && configJson.account.hasOwnProperty('expiresIn')){
+      if (config.hasOwnProperty('onlineProfile') || configJson.hasOwnProperty('mcAccessToken') && configJson.hasOwnProperty('account') && configJson.account.hasOwnProperty('expiresIn')){
         const currentTime = new Date();
         if (currentTime.getTime() > configJson.account.expiresIn) {
            getRefreshToken()
@@ -16,18 +18,27 @@ ipcRenderer.on('get-config-reply', (event, config) => {
          if(checkProfile){
             checkProfile = false;
             getProfile();
-            reloadSkin(document.getElementById('skinHead'), configJson.onlineProfile.skins.url,22,2.75)
-            reloadSkin(document.getElementById('playerHead'), configJson.onlineProfile.skins.url,164,20.5)
+          }
+          if(configJson.onlineProfile.hasOwnProperty('skins')){
+            skinUrl = configJson.onlineProfile.skins[0].url;
+            downloadSkin()
           }
           document.getElementById('accountBar').querySelector('span').textContent = configJson.onlineProfile.name;
+          document.getElementById('playerName').textContent = configJson.onlineProfile.name;
+
           document.getElementById('account').textContent = configJson.onlineProfile.name;
         }
       }else if(configJson.hasOwnProperty('offlineProfile')){
           document.getElementById('accountBar').querySelector('span').textContent = configJson.offlineProfile.name;
+          document.getElementById('playerName').textContent = configJson.offlineProfile.name;
+
           document.getElementById('account').textContent = configJson.offlineProfile.name;
         }
       }else{
-        document.getElementById('loginCard').style.display = 'grid';
+        document.getElementById('gamesCard').display = "none"
+        document.getElementById('accountCard').style.display = 'none';
+        document.getElementById('accountInfo').style.display = 'flex';
+        document.getElementById('loginCard').style.display = 'flex';
       }
 });
 
@@ -165,6 +176,7 @@ xhr.onload = function() {
     const mcAccessToken = response.access_token; // 获取 Minecraft 访问令牌
     ipcRenderer.send('update-config', "mcAccessToken", mcAccessToken)
     document.getElementById('accountInfo').style.display = 'none';
+    document.getElementById('loading').style.display = 'none';
     // 使用 Minecraft 访问令牌进行后续操作
     getProfile()
   } else{
@@ -178,8 +190,6 @@ xhr.send(JSON.stringify(body));
 
 function getProfile() {
   document.getElementById('loading').style.display = 'flex';
-
-    return new Promise((resolve, reject) => {
         // 使用 XMLHttpRequest 发送 GET 请求
         const xhr = new XMLHttpRequest();
         xhr.open('GET', 'https://api.minecraftservices.com/minecraft/profile');
@@ -189,29 +199,39 @@ function getProfile() {
             if (this.status === 200) {
                 // 解析响应数据
                 const response = JSON.parse(this.responseText);
-                ipcRenderer.send('update-config', "onlineProfile", response);
                 document.getElementById('loading').style.display = 'none';
-                resolve(response);
+
+                ipcRenderer.send('update-config', "onlineProfile", response)
             } else {
                 document.getElementById('loading').style.display = 'none';
                 // 请求失败，可能是因为账号没有拥有游戏
-                resolve("false");
             }
         };
-
         xhr.send();
-    });
+
 }
 
-function reloadSkin(element,image,size,m) {
-if(configJson.hasOwnProperty('onlineProfile') && configJson.onlineProfile.hasOwnProperty('skins')){
- const canvas = element;
+function downloadSkin(){
+  const filePath = path.join(__dirname,"img", 'skin.png');
+  const file = fs.createWriteStream(filePath);
+  request = http.get(skinUrl, response => {
+   response.pipe(file);
+   reloadSkin()
+})
+
+request.on('error', error => {
+    console.error(error);
+});
+}
+
+function reloadSkin() {
+ const canvas = document.getElementById('skinHead');
  const ctx = canvas.getContext('2d');
- canvas.width = size;
- canvas.height = size;
+ canvas.width = 22;
+ canvas.height = 22;
  
  const img = new Image();
- img.src = image;
+ img.src = './img/skin.png';
  
  img.onload = function() {
      ctx.drawImage(img, 8, 8, 8, 8, 0, 0, 8, 8);
@@ -224,8 +244,8 @@ if(configJson.hasOwnProperty('onlineProfile') && configJson.onlineProfile.hasOwn
  
      for (let y = 0; y < canvas.height; y++) {
          for (let x = 0; x < canvas.width; x++) {
-             const srcX = Math.floor(x / m);
-             const srcY = Math.floor(y / m);
+             const srcX = Math.floor(x / 2.75);
+             const srcY = Math.floor(y / 2.75);
  
              const srcIndex = (srcY * 8 + srcX) * 4;
              const dstIndex = (y * canvas.width + x) * 4;
@@ -239,7 +259,40 @@ if(configJson.hasOwnProperty('onlineProfile') && configJson.onlineProfile.hasOwn
  
      ctx.putImageData(newImageData, 0, 0);
 };
-}
+const canva = document.getElementById('playerHead');
+const ctx1 = canva.getContext('2d');
+canva.width = 164;
+canva.height = 164;
+
+const image = new Image();
+image.src = './img/skin.png';
+
+image.onload = function() {
+  ctx1.drawImage(image, 8, 8, 8, 8, 0, 0, 8, 8);
+
+    const imageData = ctx1.getImageData(0, 0, 8, 8);
+    const data = imageData.data;
+
+    const newImageData = ctx1.createImageData(canva.width, canva.height);
+    const newData = newImageData.data;
+
+    for (let y = 0; y < canva.height; y++) {
+        for (let x = 0; x < canva.width; x++) {
+            const srcX = Math.floor(x / 20.5);
+            const srcY = Math.floor(y / 20.5);
+
+            const srcIndex = (srcY * 8 + srcX) * 4;
+            const dstIndex = (y * canva.width + x) * 4;
+
+            newData[dstIndex] = data[srcIndex];
+            newData[dstIndex + 1] = data[srcIndex + 1];
+            newData[dstIndex + 2] = data[srcIndex + 2];
+            newData[dstIndex + 3] = data[srcIndex + 3];
+        }
+    }
+
+    ctx1.putImageData(newImageData, 0, 0);
+};
 }
 
 

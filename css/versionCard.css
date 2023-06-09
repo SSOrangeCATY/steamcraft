@@ -1,10 +1,33 @@
+.gamesCard{
+  top: 100px;
+  bottom: 50px;
+  position: fixed;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 150px);
+  background-color: rgb(30, 33, 37);
+  user-select: none;
+}
+
+.selectVersion {
+  top: 100px;
+  position: fixed;
+  left: 0px;
+  width: calc(25%);
+  height: calc(100% - 150px);
+  background-color: rgb(36, 40, 47);
+  overflow-y: auto;
+  user-select: none;
+}
+
+
 .versionInfo {
-    position: relative;
-    top: 68px;
-    left: 25%;
-    width: 75%;
-    height: calc(100% - 150px);
-    background-color: rgb(30, 33, 37);
+  position: absolute;
+  left: calc(25%);
+  width: calc(75%);
+  height: calc(100%);
+  background-color: rgb(30, 33, 37);
+  flex-direction: column;
 }
   .showBgImage {
     width: 100%;
@@ -15,10 +38,11 @@
   
   .showVersion {
     color: rgb(235, 235, 235);
+    position: relative;
     margin-top: -10%;
-    margin-left: 23px;
-    margin-bottom: 7px;
-    font-size: 30px;
+    left: 23px;
+    bottom: 7px;
+    font-size: 32px;
     text-shadow: 2px 2px 5px #333, -2px -2px 5px #666;
     min-width: 0;
     white-space: nowrap;
@@ -27,11 +51,9 @@
     user-select: none;
   }
   .card2 {
-    position: absolute;
-    top: 100%;
-    height: 100%;
-    width: 100%;
-    backdrop-filter: blur(10px);
+    position: relative;
+    height: calc(100%);
+    backdrop-filter: blur(5px);
   }
   
   #start {
@@ -55,12 +77,8 @@
     color: white;
   }
   .startBt span {
-    margin-left: 16px;
     margin-top: 8px;
     margin-left: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     font-size: 16px;
   }
   #running {

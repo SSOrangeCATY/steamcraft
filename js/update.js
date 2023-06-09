@@ -1,5 +1,7 @@
 document.getElementById("games").style.color = "rgb(26,159,255)"
 document.getElementById('loading').style.display = 'none';
+document.getElementById('accountInfo').style.display = 'none';
+
 ipcRenderer.send('update-config', "selectVersion","none")
 
 
@@ -22,8 +24,12 @@ buttons.forEach(function(button) {
     if(id == "home"){
       ipcRenderer.send('set-htmlView',path.join(__dirname,"home","index.html"))
     }else if(id == "games"){
-      ipcRenderer.send('update-config', "selectVersion","none")
       ipcRenderer.send('remove-View')
+      document.getElementById('gamesCard').display = "flex"
+      document.getElementById('accountInfo').style.display = 'none';
+    }else if(id == "account"){
+      document.getElementById('gamesCard').display = "none"
+      document.getElementById('accountInfo').style.display = 'flex';
     }
   }
   

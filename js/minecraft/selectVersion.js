@@ -1,5 +1,7 @@
 
 let config_;
+document.getElementById("versionInfo").style.display = "none"
+
 
 // 读取配置文件
  ipcRenderer.on('get-config-reply', (event, config) => {

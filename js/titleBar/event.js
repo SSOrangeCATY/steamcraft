@@ -2,8 +2,10 @@ var { dialog } = require('@electron/remote')
 var { ipcRenderer } = require('electron')
 var fs = require('fs')
 var path = require('path')
-var { spawn } = require('child_process');
+var { exec } = require('child_process');
 var os = require('os');
+const http = require('http');
+
 
 
 const maximizeBtn = document.getElementById('maximize-btn');

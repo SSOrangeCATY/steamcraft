@@ -13,7 +13,7 @@
   <img src="./img/mc_logo.webp"></img>
     <div class="title">Orange</div>
     <button class="account" id="accountBar">
-      <canvas id="skinHead"></canvas>
+      <canvas id="skinHead" height="22px" width="22px"></canvas>
       <span>账户未配置</span>
     </button>
     <div class="buttons">
@@ -27,7 +27,7 @@
   <li><img class="logo" src="./img/logo.webp" alt="Minecraft Logo"></li>
   <li><button class="navButton" id="home">主页</button></li>
   <li><button class="navButton" id="games">库</button></li>
-  <li><button class="navButton" id="download">版本</button></li>
+  <li><button class="navButton" id="download">下载</button></li>
   <li><button class="navButton" id="account">Player</button></li>
 </ul>
 
@@ -35,10 +35,10 @@
   <button id="mcDir">游戏目录未指定</button>
 </div>
 
+<div class="gamesCard" id="gamesCard">
 <div class="selectVersion">
   <div class="versions"></div>
  </div> 
-
 <div class="versionInfo" id="versionInfo" style="display: none;">
     <div class="card1">
     <img class="showBgImage" src="./img/showImg/cave-update/MC_Caves-and-Cliffs-Part-II_Landscape-Hero-2700x900.jpg">
@@ -52,7 +52,7 @@
         </button>        
       </div>
 </div>
-
+</div>
 <div class="accountInfo" id="accountInfo">
   <div class="loginCard" id="loginCard" style="display: none;">
     <div class="tips">请选择账户以进行下一步操作</div>
@@ -61,10 +61,10 @@
       <button id="offline">离线账户</button>
     </div>
   </div>
-  <div class="accountCard" style="display: none">
+  <div class="accountCard" id="accountCard">
     <div class="card">
       <canvas id="playerHead"></canvas>
-      <div class="playerName">NAME</div>
+      <div class="playerName" id="playerName">NAME</div>
     </div>
     <div class="playerTime">
       <div class="versionIcon"></div>

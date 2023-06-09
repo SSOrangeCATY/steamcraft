@@ -1,3 +1,4 @@
+
 .accountInfo {
     position: fixed;
     left: 0px;
@@ -6,6 +7,15 @@
     height: calc(100% - 150px);
     background-color: rgb(31,34,39);
     user-select: none;
+}
+.accountInfo .loginCard{
+    display: flex;
+    position: relative;
+    left: 0px;
+    top: 100px;
+    width: 100%;
+    height: calc(100% - 150px);
+    flex-direction: column;
 }
 
 .accountInfo .loginCard .loginSelect{
