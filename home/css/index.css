@@ -42,7 +42,6 @@ body {
 }
 .container .main img {
 	display: block;
-	margin: 0 auto;
 }
 .container .main .Neikuang {
 	width: 650px;
@@ -135,6 +134,7 @@ body {
 	margin-right: auto;
 	margin-left: auto;
 	padding-left: 40px;
+	overflow: hidden;
 }
 .container .main .nav>div {
 	width: 200px;

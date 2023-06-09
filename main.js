@@ -137,7 +137,6 @@ ipcMain.on('get-auth-code', (event) => {
 
   win.loadFile('index.html')
 }
-
 // 检查配置文件是否存在
 fs.access(configPath, fs.constants.F_OK, (err) => {
   if (err) {
@@ -148,6 +147,8 @@ fs.access(configPath, fs.constants.F_OK, (err) => {
     fs.writeFile(configPath, JSON.stringify(config), (err) => {
       if (err) throw err
       console.log('Config file has been created.')
+      app.relaunch({ args: process.argv.slice(1).concat(['--relaunch']) })
+      app.exit(0)
     })
   } else {
     fs.readFile(configPath, 'utf-8', (err, data) => {

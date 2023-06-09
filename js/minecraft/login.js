@@ -19,7 +19,7 @@ ipcRenderer.on('get-config-reply', (event, config) => {
             checkProfile = false;
             getProfile();
           }
-          if(configJson.onlineProfile.hasOwnProperty('skins')){
+          if(configJson.hasOwnProperty('onlineProfile') && configJson.onlineProfile.hasOwnProperty('skins')){
             skinUrl = configJson.onlineProfile.skins[0].url;
             downloadSkin()
           }

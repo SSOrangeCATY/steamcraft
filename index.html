@@ -4,6 +4,8 @@
   <link rel="stylesheet" href="./css/versionCard.css" />
   <link rel="stylesheet" href="./css/select_version.css" />
   <link rel="stylesheet" href="./css/account.css" />
+  <link rel="stylesheet" href="./css/dialog.css" />
+
 
 
 <head>
@@ -58,7 +60,7 @@
     <div class="tips">请选择账户以进行下一步操作</div>
     <div class="loginSelect">
       <button id="microsoft">微软账户</button>
-      <button id="offline">离线账户</button>
+      <button id="offline" style="display: none;">离线账户</button>
     </div>
   </div>
   <div class="accountCard" id="accountCard">
@@ -82,7 +84,10 @@
   <span class="item item5" style="--delay:-0.7s"></span>
 </div>
 
+<div id="dialogContainer"></div>
+
 <script src="./js/titleBar/event.js"></script>
+<script src="./js/dialog.js"></script>
 <script src="./js/minecraft/login.js"></script>
 <script src="./js/update.js"></script>
 <script src="./js/minecraft/selectVersion.js"></script>

@@ -1,0 +1,27 @@
+@charset "utf-8";
+.container .FanHuiJian {
+	background-color: #24282F;
+	height: 50px;
+	width: 100px;
+	text-align: center;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	border-radius: 3px;
+}
+
+.container .FanHuiJian a {
+	font-size: 24px;
+	line-height: 50px;
+	display: block;
+	text-decoration: none;
+	color: #CCC;
+}
+
+.container .main img {
+	display: block;
+	margin: 0 auto;
+}
+.container .main p a {
+	color: #F60;
+	text-decoration: none;
+}

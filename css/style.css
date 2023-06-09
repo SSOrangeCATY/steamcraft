@@ -19,7 +19,7 @@ button:hover {
    color: #fff;
    user-select: none;
    -webkit-app-region: drag;
-   z-index: 9999;
+   z-index: 10005;
  }
  .title-bar img {
   width: 14px;
