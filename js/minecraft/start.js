@@ -11,6 +11,7 @@ let text;
 let auth_player_name = "player"
 let version_name
 let game_directory
+let library_directory
 let assets_root
 let assets_index_name
 let auth_uuid = "00000XXXXXXXXXXXXXXXXXXXXXX32A4D"
@@ -39,6 +40,7 @@ let showVersion = document.getElementById("showVersion")
 ipcRenderer.on('get-config-reply', (event, config) => {
   if(config.hasOwnProperty('minecraftDir') && config.hasOwnProperty('versions')){
     game_directory = config.minecraftDir
+    library_directory = '"'+path.join(config.minecraftDir,"libraries")+'"'
     classpath = path.join(config.minecraftDir,"versions", config.selectVersion, `${config.selectVersion}.jar`)
     jsonPath = path.join(config.minecraftDir,"versions", config.selectVersion, `${config.selectVersion}.json`)
     batPath = path.join(config.minecraftDir,"versions", config.selectVersion, "launch.bat")
@@ -160,10 +162,24 @@ function getJson(callback){
             case 'launcher_version':
               argument = argument.replace(match, launcher_version);
               break;
+            case 'version_name':
+                argument = argument.replace(match, jsonData.id);
+                break;
+            case 'classpath_separator': 
+              argument = argument.replace(match,"")
+              break;
+            case 'library_directory': 
+              argument = argument.replace(match,library_directory)
+              break;
           }
         }
       }
-      text += argument+" "
+      if (argument.includes('.jar') && argument.includes('libraries')) {
+        argument = argument.replace(/\.jar/g, '.jar;');
+      }
+      if(argument !== ''){
+        text += argument+" "
+      }
     }
   }
   text += "-cp "
@@ -187,6 +203,7 @@ function getJson(callback){
     if (!skipLibrary && library.downloads && library.downloads.artifact) {
       let libUrl = library.downloads.artifact.url;
       let libPath = libUrl.replace('https://libraries.minecraft.net/', '');
+      libPath = libPath.replace('https://maven.minecraftforge.net/', '');
       libPath = libPath.replace(/\//g, '\\');
       
       fixedPath += path.join(game_directory, "libraries", libPath) + ";";
